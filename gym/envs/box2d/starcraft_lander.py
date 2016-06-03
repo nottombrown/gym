@@ -5,33 +5,14 @@ import zmq
 import gym
 from gym import spaces
 
-# Rocket trajectory optimization is a classic topic in Optimal Control.
-#
-# According to Pontryagin's maximum principle it's optimal to fire engine full throttle or
-# turn it off. That's the reason this environment is OK to have discreet actions (engine on or off).
-#
-# Landing pad is always at coordinates (0,0). Coordinates are the first two numbers in state vector.
-# Reward for moving from the top of the screen to landing pad and zero speed is about 100..140 points.
-# If lander moves away from landing pad it loses reward back. Episode finishes if the lander crashes or
-# comes to rest, receiving additional -100 or +100 points. Each leg ground contact is +10. Solved is 200 points.
-# Landing outside landing pad is possible. Fuel is infinite, so an agent can learn to fly and then land
-# on its first attempt. Please see source code for details.
-#
-# Too see heuristic landing, run:
-#
-# python gym/envs/box2d/lunar_lander.py
-#
 # To play yourself, run:
 #
-# python examples/agents/keyboard_agent.py StarCraftLander-v0
-#
-# Created by Oleg Klimov. Licensed on the same terms as the rest of OpenAI Gym.
+# python examples/agents/mouse_agent.py StarCraftLander-v0
 
 VIEWPORT_W = 640
 VIEWPORT_H = 480
 
-
-# Proof of concept
+# Proof of concept - TODO: Massively refactor this
 context = zmq.Context()
 
 #  Socket to talk to server

@@ -3,14 +3,11 @@ import sys, gym
 
 #
 # Test yourself as a learning agent! Pass environment name as a command-line argument.
-#
 
 env = gym.make('StarCraftLander-v0' if len(sys.argv)<2 else sys.argv[1])
 
 ACTIONS = env.action_space.n
 ROLLOUT_TIME = 1000
-SKIP_CONTROL = 0    # Use previous control decision SKIP_CONTROL times, that's how you
-                    # can test what skip is still usable.
 
 human_agent_action = 0
 human_wants_restart = False
@@ -51,17 +48,10 @@ def rollout(env):
     obser = env.reset()
     skip = 0
     for t in xrange(ROLLOUT_TIME):
-        if not skip:
-            # print "taking action {}".format(human_agent_action)
-            a = human_agent_action
-            skip = SKIP_CONTROL
-        else:
-            skip -= 1
-
         env.render()
 
         # We can only advance the game on user actions, by moving this to the on_X functions
-        obser, r, done, info = env.step(a)
+        obser, r, done, info = env.step(human_agent_action)
         if done: break
 
         if human_wants_restart: break
