@@ -1,9 +1,10 @@
 import sys, math
 import numpy as np
-import zmq
 
 import gym
 from gym import spaces
+
+from remote_starcraft_game import RemoteStarCraftGame
 
 # To play yourself, run:
 #
@@ -13,16 +14,6 @@ VIEWPORT_W = 640
 VIEWPORT_H = 480
 
 # Proof of concept - TODO: Massively refactor this
-context = zmq.Context()
-
-#  Socket to talk to server
-print("Connecting to hello world server...")
-socket = context.socket(zmq.REQ)
-
-windows_server_2012_url = "tcp://0.tcp.ngrok.io:12635"
-socket.connect(windows_server_2012_url)
-# socket.connect("tcp://localhost:6666")
-
 
 class StarCraftBasic(gym.Env):
     metadata = {
@@ -31,6 +22,7 @@ class StarCraftBasic(gym.Env):
 
     def __init__(self):
         self.viewer = None
+        self.game = RemoteStarCraftGame()
 
         high = np.array([np.inf]*8)
         self.action_space = spaces.Discrete(4)
@@ -40,18 +32,16 @@ class StarCraftBasic(gym.Env):
     def _reset(self):
         return self._step(0)[0]
 
-    def _step(self, action):
-        assert action in [0,1,2,3], "%r (%s) invalid " % (action,type(action))
 
-        # print action
+    # TODO: Switch this to using numpy actions rather than action payloads
+    def _step(self, action_payload):
 
-        if action == 1:
-            print("Sending request %s ..." % action)
-            socket.send_json("Hello")
 
-            #  Get the reply.
-            message = socket.recv()
-            print("Received reply %s [ %s ]" % (request, message))
+        # TODO: Re-enable assertions
+        # assert action in [0,1,2,3], "%r (%s) invalid " % (action,type(action))
+
+        if action_payload != 0: # 0 is the null action
+            self.game.make_action(action_payload)
 
         observation = np.zeros([8])
         reward = 0

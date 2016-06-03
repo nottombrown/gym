@@ -30,11 +30,27 @@ def key_release(key, mod):
 
 def mouse_press(x, y, button, modifiers):
     print "Mouse pressed: " + str((x, y))
-    pass
+    _make_mouse_action(x, y, button, modifiers)
 
 def mouse_release(x, y, button, modifiers):
     print "Mouse released: " + str((x, y))
-    pass
+    _make_mouse_action(x, y, button, modifiers)
+
+
+def _make_mouse_action(x, y, button, modifiers):
+    global human_agent_action
+    action_payload = {
+        "command": "make_action",
+        "mouse": {
+            "x": x,
+            "y": y,
+            "button": button
+        },
+        "modifiers": modifiers
+    }
+    # TODO: Encode this into action_space
+    human_agent_action = action_payload
+
 
 env.render()
 env.viewer.window.on_key_press = key_press
@@ -53,6 +69,9 @@ def rollout(env):
         # We can only advance the game on user actions, by moving this to the on_X functions
         obser, r, done, info = env.step(human_agent_action)
         if done: break
+
+        # Only do the human_agent_action once
+        human_agent_action = 0
 
         if human_wants_restart: break
         while human_sets_pause:
