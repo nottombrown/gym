@@ -1,5 +1,4 @@
 from gym.envs.registration import registry, register, make, spec
-
 # Algorithmic
 # ----------------------------------------
 
@@ -83,6 +82,12 @@ register(
 register(
     id='LunarLander-v2',
     entry_point='gym.envs.box2d:LunarLander',
+    timestep_limit=1000,
+    reward_threshold=200,
+)
+register(
+    id='StarCraftLander-v0',
+    entry_point='gym.envs.box2d:StarCraftLander',
     timestep_limit=1000,
     reward_threshold=200,
 )
