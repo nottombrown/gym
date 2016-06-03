@@ -4,7 +4,7 @@ import sys, gym
 #
 # Test yourself as a learning agent! Pass environment name as a command-line argument.
 
-env = gym.make('StarCraftLander-v0' if len(sys.argv)<2 else sys.argv[1])
+env = gym.make('StarCraftBasic-v0' if len(sys.argv)<2 else sys.argv[1])
 
 ACTIONS = env.action_space.n
 ROLLOUT_TIME = 1000

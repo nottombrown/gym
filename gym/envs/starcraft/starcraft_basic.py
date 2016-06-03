@@ -7,7 +7,7 @@ from gym import spaces
 
 # To play yourself, run:
 #
-# python examples/agents/mouse_agent.py StarCraftLander-v0
+# python examples/agents/mouse_agent.py StarCraftBasic-v0
 
 VIEWPORT_W = 640
 VIEWPORT_H = 480
@@ -24,7 +24,7 @@ socket.connect(windows_server_2012_url)
 # socket.connect("tcp://localhost:6666")
 
 
-class StarCraftLander(gym.Env):
+class StarCraftBasic(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array']
     }
@@ -79,4 +79,4 @@ class StarCraftLander(gym.Env):
         elif mode is 'human':
             pass
         else:
-            return super(StarCraftLander, self).render(mode=mode)
+            return super(StarCraftBasic, self).render(mode=mode)
