@@ -23,8 +23,10 @@ setup(name='gym',
                   'pachi-py>=0.0.19',
                   'box2d-py',
                   'doom_py>=0.0.11',
+                  'pyzmq>=15.2.0',
                   'mujoco_py>=0.4.3', 'imageio',
                   'keras', 'theano'],
+
 
           # Environment-specific dependencies. Keep these in sync with
           # 'all'!
@@ -33,6 +35,7 @@ setup(name='gym',
           'box2d': ['box2d-py'],
           'classic_control': ['PyOpenGL'],
           'doom': ['doom_py>=0.0.11'],
+          'starcraft': ['pyzmq>=15.2.0'],
           'mujoco': ['mujoco_py>=0.4.3', 'imageio'],
           'parameter_tuning': ['keras', 'theano'],
       },
