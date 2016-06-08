@@ -4,7 +4,7 @@ import numpy as np
 import gym
 from gym import spaces
 
-from remote_starcraft_game import RemoteStarCraftGame
+from remote_starcraft_game_client import RemoteStarCraftGameClient
 
 # To play yourself, run:
 #
@@ -13,16 +13,17 @@ from remote_starcraft_game import RemoteStarCraftGame
 VIEWPORT_W = 640
 VIEWPORT_H = 480
 
-# Proof of concept - TODO: Massively refactor this
 
-class StarCraftBasic(gym.Env):
+# Proof of concept - TODO: Massively refactor this
+class StarCraftBasicEnv(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array']
     }
 
     def __init__(self):
         self.viewer = None
-        self.game = RemoteStarCraftGame()
+        self.game = RemoteStarCraftGameClient()
+        self.game.new_episode()  # Initializes a new episode on the server
 
         high = np.array([np.inf]*8)
         self.action_space = spaces.Discrete(4)
@@ -32,16 +33,15 @@ class StarCraftBasic(gym.Env):
     def _reset(self):
         return self._step(0)[0]
 
-
     # TODO: Switch this to using numpy actions rather than action payloads
     def _step(self, action_payload):
-
 
         # TODO: Re-enable assertions
         # assert action in [0,1,2,3], "%r (%s) invalid " % (action,type(action))
 
-        if action_payload != 0: # 0 is the null action
-            self.game.make_action(action_payload)
+        # if action_payload != 0: # 0 is the null action
+
+        self.game.step(action_payload)
 
         observation = np.zeros([8])
         reward = 0
@@ -69,4 +69,4 @@ class StarCraftBasic(gym.Env):
         elif mode is 'human':
             pass
         else:
-            return super(StarCraftBasic, self).render(mode=mode)
+            return super(StarCraftBasicEnv, self).render(mode=mode)

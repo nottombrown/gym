@@ -1,1 +1,1 @@
-from gym.envs.starcraft.starcraft_basic import StarCraftBasic
+from gym.envs.starcraft.starcraft_basic import StarCraftBasicEnv

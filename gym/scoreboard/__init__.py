@@ -78,6 +78,11 @@ add_group(
 )
 
 add_group(
+    id='starcraft',
+    name='StarCraft',
+    description='StarCraft BroodWar environments.'
+)
+add_group(
     id='safety',
     name='Safety',
     description='Environments to test various AI safety properties.'
@@ -698,6 +703,12 @@ add_task(
     contributor='ppaquette',
 )
 
+# StarCraft
+add_task(
+    id='StarCraftBasic-v0',
+    group='starcraft',
+    experimental=True,
+)
 
 # Safety
 
@@ -859,8 +870,6 @@ This is a toy example of semi-supervised reinforcement learning, though similar 
 .. [Griffith13] Griffith, Shane, et al. "Policy shaping: Integrating human feedback with reinforcement learning." Advances in Neural Information Processing Systems. 2013.
 """
 )
-
-
 
 # Deprecated
 
