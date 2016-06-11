@@ -8,7 +8,7 @@ from remote_starcraft_game_client import RemoteStarCraftGameClient
 
 # To play yourself, run:
 #
-# python examples/agents/mouse_agent.py StarCraftBasic-v0
+# python examples/agents/mouse_keyboard_agent.py StarCraftBasic-v0
 
 VIEWPORT_W = 640
 VIEWPORT_H = 480
