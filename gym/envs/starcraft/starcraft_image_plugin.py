@@ -2,6 +2,9 @@ from PIL import Image, ImageFile
 from PIL import ImagePalette
 
 
+# We always write SCIF and then some newlines at the beginning of our file to identify it
+_SCIF_HEADER = b"SCIF\r\n\r\n"
+
 class StarCraftImageFile(ImageFile.ImageFile):
     """ StarCraft uses a fixed 256 color palette. We keep the palette here for fast decoding.
     """
@@ -19,9 +22,17 @@ class StarCraftImageFile(ImageFile.ImageFile):
         self.mode = "P"  # 8-bit palette-mapped image.
         self.palette = self.global_palette
 
+        header = self.fp.read(8)
+        if header[:8] != _SCIF_HEADER:
+            raise SyntaxError, "not a SCIF file"
+
+
         self.tile = [
-            ("raw", (0, 0) + self.size, 0, (self.mode, 0, 1))
+            ("raw", (0, 0) + self.size, 8, (self.mode, 0, 1))
         ]
 
-Image.register_open("SCIF", StarCraftImageFile)
+def _accept(prefix):
+    return prefix[:8] == _SCIF_HEADER
+
+Image.register_open("SCIF", StarCraftImageFile, _accept)
 Image.register_extension("SCIF", ".scif")
