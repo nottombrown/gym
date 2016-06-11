@@ -8,33 +8,36 @@ class MouseKeyboardAction(object):
     It will contain one of the following events:
         KeyEvent
         PointerEvent
-
     """
 
     def __init__(self, x, y, button, key, modifiers):
-        #TODO: store this internally
-        pass
+        self.x = x
+        self.y = y
+        self.button = button
+        self.key = key
+        self.modifiers = modifiers
 
-    @classmethod
-    def from_np(cls, np_action_vector):
-        return cls(np.array([0,0,0,0]))
 
-    @classmethod
-    def from_mouse_event(cls, x, y, button, modifiers):
-        return cls(np.array([0, 0, 0, 0]))
-
-    @classmethod
-    def from_key_event(cls, key, modifiers):
-        return cls()
-
-    @classmethod
-    def from_json(cls, np_action_vector):
-        return cls()
 
     @classmethod
     def null(cls):
-        return cls(0, 0, 0, 0)
+        return cls(0, 0, 0, 0, 0)
 
+    @classmethod
+    def from_mouse_event(cls, x, y, button, modifiers):
+        return cls(x, y, button, 0,  modifiers)
+
+    @classmethod
+    def from_key_event(cls, key, modifiers):
+        return cls(0, 0, 0, key,  modifiers)
+
+    @classmethod
+    def from_json(cls, np_action_vector):
+        pass
+
+    @classmethod
+    def from_np(cls, ):
+        pass
 
     def to_np(self):
         return np.array([0, 0, 0, 0])
