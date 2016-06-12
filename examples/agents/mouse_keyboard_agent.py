@@ -58,7 +58,6 @@ if __name__ == '__main__':
 
         for j in range(max_steps):
             env.render()
-
             action = agent.act(ob, reward, done)
             ob, reward, done, _ = env.step(action)
             if done:

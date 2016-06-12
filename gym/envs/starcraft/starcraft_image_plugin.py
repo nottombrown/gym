@@ -1,8 +1,13 @@
+from StringIO import StringIO
+
+import numpy as np
 from PIL import Image, ImageFile
 from PIL import ImagePalette
 
 
 # We always write SCIF and then some newlines at the beginning of our file to identify it
+from PIL.PngImagePlugin import PngImageFile
+
 _SCIF_HEADER = b"SCIF\r\n\r\n"
 
 class StarCraftImageFile(ImageFile.ImageFile):
@@ -31,8 +36,55 @@ class StarCraftImageFile(ImageFile.ImageFile):
             ("raw", (0, 0) + self.size, 8, (self.mode, 0, 1))
         ]
 
+    def to_np_rgb(self):
+        """
+        Returns a (width x height x 3) numpy tensor
+        """
+
+        # Turn the SCIF into a PNG
+        png_stream = StringIO()
+        self.save(png_stream, format='png')
+        png_img = Image.open(png_stream)
+        assert isinstance(png_img, PngImageFile)
+
+        # Put the PNG into RGB mode
+        png_rgb = png_img.convert('RGB')
+
+
+        pixel = png_rgb.getpixel((0, 0))
+        print pixel
+        assert pixel == (36, 40, 44)
+
+        # 307200 tuples of (R, G, B)
+        pixels = np.array(png_rgb.getdata(), dtype = np.uint8)
+        reshaped_pixels = pixels.reshape([480, 640, 3])
+        return reshaped_pixels
+
+    def to_obs(self):
+        """
+
+        Returns
+        -------
+        A vector of 307200 uint8s representing a screen dump from a starcraft game
+        """
+        return np.array(self.getdata())
+
+    @classmethod
+    def from_screen_buffer(cls, screendump_bytes):
+        # Turn the screendump into a SCIF by adding the header and opening it
+        stream = StringIO(_SCIF_HEADER + screendump_bytes)
+        return Image.open(stream)
+
+    @classmethod
+    def from_np_array(cls, np_array):
+        return cls.from_screen_buffer(bytearray(list(np_array)))
+
+
+# Register with ImageFile loaders
 def _accept(prefix):
     return prefix[:8] == _SCIF_HEADER
 
 Image.register_open("SCIF", StarCraftImageFile, _accept)
 Image.register_extension("SCIF", ".scif")
+
+

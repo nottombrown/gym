@@ -1,9 +1,10 @@
 import zmq
 import json
-from PIL import Image
+from base64 import b64decode
+import numpy as np
 
 from gym.envs.starcraft.starcraft_image_plugin import StarCraftImageFile
-import numpy as np
+
 
 class StarCraftClientException(Exception):
     def __init__(self, msg, response):
@@ -17,13 +18,26 @@ class NoAvailableWorkersException(StarCraftClientException):
 class OutOfSyncAPIException(StarCraftClientException):
     pass
 
+
+with open("/tmp/starcraft.scif.base64", 'r') as b64_scif:
+    scif_bytes = b64decode(b64_scif.read())
+    b64_scif.close()
+
+screen_buffer = scif_bytes
+img = StarCraftImageFile.from_screen_buffer(screen_buffer)
+img.to_np_rgb()
+img.to_np_rgb()
+
+
+obs = img.to_obs()
+
+
 class RemoteStarCraftGameClient(object):
     """
     Thin client around the StarCraftGameAPI
     """
 
     def __init__(self):
-
         context = zmq.Context()
 
         # Store the last observed state
@@ -68,9 +82,10 @@ class RemoteStarCraftGameClient(object):
         # Hack to get an image
         # img = Image.open("/tmp/starcraft_screenshot.scif")
 
+
         body = {
             "done": False,
-            "observation": np.array(bytearray([])),
+            "observation": obs,
             "reward": 1.0
         }
 

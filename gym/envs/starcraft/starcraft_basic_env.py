@@ -1,7 +1,6 @@
 import numpy as np
 import gym
 from gym import spaces
-from base64 import b64decode
 from StringIO import StringIO
 from PIL import Image
 from gym.envs.starcraft.starcraft_image_plugin import StarCraftImageFile, _SCIF_HEADER
@@ -12,14 +11,6 @@ from remote_starcraft_game_client import RemoteStarCraftGameClient
 # To play yourself, run:
 #
 # python examples/agents/mouse_keyboard_agent.py StarCraftBasic-v0
-
-
-with open("/tmp/starcraft.scif.base64", 'r') as b64_scif:
-    scif_bytes = b64decode(b64_scif.read())
-
-stream = StringIO(_SCIF_HEADER + scif_bytes)
-
-im = Image.open(stream)
 
 class StarCraftBasicEnv(gym.Env):
     metadata = {
@@ -52,32 +43,18 @@ class StarCraftBasicEnv(gym.Env):
         # if action_payload != 0: # 0 is the null action
 
         observation, reward, done, info = self.game.step(action_payload)
+
+        if self._obs != None:
+            # Check that nothing weird is happening
+            assert(np.array_equal(self._obs, observation))
+
         self._obs = observation
 
         return observation, reward, done, info
 
     def _get_rgb(self):
-        # img = StarCraftImageFile()
-        # img.frombytes(bytearray(self._obs.tolist()))
-
-        assert isinstance(im, StarCraftImageFile)
-
-        png_stream = StringIO()
-        im.save(png_stream, format='png')
-
-        png_image = Image.open(png_stream)
-        assert isinstance(png_image, PngImageFile)
-        png_rgb = png_image.convert('RGB')
-        pixel = png_rgb.getpixel((0, 0))
-        assert pixel == (36, 40, 44)
-
-        import numpy as np
-
-        # 307200 tuples of (R, G, B)
-        pixels = np.array(png_rgb.getdata(), dtype=np.uint8)
-        reshaped = pixels.reshape([480, 640, 3])
-
-        return reshaped
+        img = StarCraftImageFile.from_np_array(self._obs)
+        return img.to_np_rgb()
 
     def _render(self, mode='human', close=False):
         if close:
