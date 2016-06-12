@@ -86,10 +86,10 @@ class StarCraftAPIClient(object):
         _, _, body = self._post("v1/envs/{0}/step".format(env_id), {}, mouse_keyboard_action)
         return body
 
-    def close_env(self, env_id):
-        _, _, body = self._post("v1/envs/{0}/close".format(env_id), {}, {})
-        return body
-
     def reset_env(self, env_id, data):
         _, _, body = self._post("v1/envs/{0}/reset".format(env_id), {}, data)
+        return body
+
+    def close_env(self, env_id):
+        _, _, body = self._post("v1/envs/{0}/close".format(env_id), {}, {})
         return body

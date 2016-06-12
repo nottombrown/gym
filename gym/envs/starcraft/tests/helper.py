@@ -10,23 +10,21 @@ from gym.scoreboard.client.tests.helper import fake_id
 class StarCraftAPITestCase(unittest.TestCase):
     def setUp(self):
         super(StarCraftAPITestCase, self).setUp()
-
-        #TODO: correctly patch into our API client
-        self.requestor_patcher = mock.patch(
+        self.api_client_patcher = mock.patch(
             'gym.envs.starcraft.starcraft_api_client.StarCraftAPIClient')
-        requestor_class_mock = self.requestor_patcher.start()
-        self.requestor_mock = requestor_class_mock.return_value
+
+        api_client_class_mock = self.api_client_patcher.start()
+        self.api_client_mock = api_client_class_mock.return_value
 
     def mock_response(self, res):
-        self.requestor_mock.request = mock.Mock(return_value=(res, 'reskey'))
-
+        self.api_client_mock.request = mock.Mock(return_value=(res, 'reskey'))
 
 class TestData(object):
 
     @classmethod
     def create_env_response(cls):
-        return cls._success({
+        return {
                 "env_id": fake_id("env"),
                 "task": "StarCraftMining-v0",
                 "observation": StarCraftImageFileTest.testImage(),
-            })
+            }
