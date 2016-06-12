@@ -42,9 +42,10 @@ class StarCraftBasicEnv(gym.Env):
     def _reset(self):
         return self._step(0)[0]
 
-    # TODO: Switch this to using numpy actions rather than action payloads
     def _step(self, action_payload):
-        observation, reward, done, info = self.game_client.step(action_payload)
+        screen_buffer_obs, reward, done, info = self.game_client.step(action_payload)
+
+        observation = StarCraftImageFile.from_screen_buffer(screen_buffer_obs).to_obs()
         self._obs = observation
 
         return observation, reward, done, info

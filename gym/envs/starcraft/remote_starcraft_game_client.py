@@ -57,33 +57,22 @@ class RemoteStarCraftGameClient(object):
             (status, headers, body)
         """
 
-        # print("Sending command %s ..." % command)
-        #
-        # request = {
-        #     "command": command,
-        #     "data": data
-        # }
-        # self.socket.send_json(request)
-        #
-        # response = json.loads(self.socket.recv())
-        # print("Received state from server")
-        #
-        # return response
+        print("POST %s ..." % endpoint)
 
-        # Hack to get an image
-        # img = Image.open("/tmp/starcraft_screenshot.scif")
+        request = (
+            endpoint,
+            json.dumps(headers),
+            json.dumps(body),
+        )
+        self.socket.send_multipart(request)
 
-
-        body = {
-            "done": False,
-            "observation": self._fixed_obs,
-            "reward": 1.0
-        }
+        status, response_headers, response_body = self.socket.recv_multipart(request)
+        print("Response %s" % status)
 
         return (
-            "200",
-            {},
-            body
+            status,
+            json.loads(response_headers),
+            json.loads(body)
         )
 
     def step(self, mouse_keyboard_action):

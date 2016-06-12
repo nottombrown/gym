@@ -7,9 +7,13 @@ from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile
 
 class StarCraftImageFileTest(unittest.TestCase):
     @classmethod
+    def testImage(cls):
+        return Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
+
+    @classmethod
     def setUpClass(cls):
         # Read the test image into memory, we use it for the rest of the tests
-        cls.img = Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
+        cls.img = cls.testImage()
         assert isinstance(cls.img, StarCraftImageFile)
 
     def test_to_obs(self):
