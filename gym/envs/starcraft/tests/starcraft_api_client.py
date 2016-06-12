@@ -3,7 +3,7 @@ from gym.envs.starcraft.starcraft_api_client import StarCraftAPIClient
 from gym.envs.starcraft.tests.helper import StarCraftAPITestCase, TestData
 
 
-class RemoteStarCraftGameClientTest(StarCraftAPITestCase):
+class StarCraftAPITest(StarCraftAPITestCase):
 
     def setUp(self):
         self.game_client = StarCraftAPIClient()
