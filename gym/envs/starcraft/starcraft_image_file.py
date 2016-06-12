@@ -6,6 +6,9 @@ from PIL.PngImagePlugin import PngImageFile
 # We always write the string "SCIF" at the beginning of our SCIF file to identify it
 _SCIF_HEADER = b"SCIF\r\n\r\n"
 
+starcraft_screen_height = 480
+starcraft_screen_width = 640
+
 class StarCraftImageFile(ImageFile.ImageFile):
     """
     Used for quickly converting StarCraft screenbuffers to various formats
@@ -55,15 +58,17 @@ class StarCraftImageFile(ImageFile.ImageFile):
 
         # 307200 tuples of (R, G, B)
         pixels = np.array(png_rgb.getdata(), dtype=np.uint8)
-        reshaped_pixels = pixels.reshape([480, 640, 3])
+        reshaped_pixels = pixels.reshape([starcraft_screen_height,
+                                          starcraft_screen_width,
+                                          3])
         return reshaped_pixels
 
     def to_obs(self):
         """
         Returns:
-            A vector of 307200 uint8s representing a screen dump from a starcraft game
+            A 480 x 640 matrix of uint8s representing a screen dump from a starcraft game
         """
-        return np.array(self.getdata())
+        return np.array(self.getdata(), dtype=np.uint8).reshape([480, 640])
 
     @classmethod
     def from_screen_buffer(cls, screendump_bytes):
@@ -75,12 +80,12 @@ class StarCraftImageFile(ImageFile.ImageFile):
         return Image.open(stream)
 
     @classmethod
-    def from_np_array(cls, np_array):
+    def from_np_array(cls, np_matrix):
         """
         Args:
-            np_array: A vector of 307200 uint8s representing a screen dump from a starcraft game
+            np_matrix: A 480 x 640 matrix of uint8s
         """
-        return cls.from_screen_buffer(bytearray(list(np_array)))
+        return cls.from_screen_buffer(bytearray(list(np_matrix.flatten())))
 
 
 # Register with ImageFile loaders
