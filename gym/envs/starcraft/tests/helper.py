@@ -1,30 +1,49 @@
-import json
 import mock
 import unittest
-import uuid
-
 from gym.envs.starcraft.tests.test_starcraft_image_file import StarCraftImageFileTest
 from gym.scoreboard.client.tests.helper import fake_id
 
 
 class RemoteEnvAPITestCase(unittest.TestCase):
+    """
+    Patches RemoteEnvAPIClient so that requests always go through a mock RemoteEnvAPIRequestor
+    """
     def setUp(self):
         super(RemoteEnvAPITestCase, self).setUp()
-        self.api_client_patcher = mock.patch(
-            'gym.envs.starcraft.remote_env_api_client.RemoteEnvAPIClient')
 
-        api_client_class_mock = self.api_client_patcher.start()
-        self.api_client_mock = api_client_class_mock.return_value
+        api_request_patcher = mock.patch(
+            'gym.envs.starcraft.remote_env_api_requestor.RemoteEnvAPIRequestor')
+        self.requestor_class_mock = api_request_patcher.start()
 
-    def mock_response(self, res):
-        self.api_client_mock.request = mock.Mock(return_value=(res, 'reskey'))
+    def mock_response(self, response):
+        """
+        Mock out the next response to return from RemoteEnvAPIRequestor.request, also set
+        self.request_mock so we can make assertions on it
+
+        Args:
+            response: A (status, headers_dict, body_dict) tuple to return next time we make
+             a request
+        """
+        self.request_mock = mock.Mock(return_value=response)
+        self.requestor_class_mock.request = self.request_mock
+
 
 class TestData(object):
 
     @classmethod
-    def create_env_response(cls):
+    def headers(cls):
         return {
+            "request_id": fake_id("request")
+        }
+
+    @classmethod
+    def create_env_response(cls):
+        return (
+            "200",
+            cls.headers(),
+            {
                 "env_id": fake_id("env"),
                 "task": "StarCraftMining-v0",
-                "observation": StarCraftImageFileTest.testImage(),
-            }
+                "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
+            })
+

@@ -1,4 +1,4 @@
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from io import BytesIO
 import numpy as np
 from PIL import Image, ImageFile, ImagePalette
@@ -64,6 +64,13 @@ class StarCraftImageFile(ImageFile.ImageFile):
                                           starcraft_screen_width,
                                           3])
         return reshaped_pixels
+
+    def to_b64_screen_buffer(self):
+        """
+        Returns:
+            A base-64 encoding of a StarCraft screendump
+        """
+        return b64encode(bytearray(self.getdata()))
 
     def to_obs(self):
         """

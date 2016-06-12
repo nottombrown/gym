@@ -13,11 +13,12 @@ class StarCraftEnv(gym.Env):
         'render.modes': ['human', 'rgb_array']
     }
 
+    # RemoteEnvAPIClient is stateless, so we share it among Env instances
+    api_client = RemoteEnvAPIClient()
+
     def __init__(self):
         self.viewer = None
         self._cached_obs = None # Cache the last observation we've seen
-
-        self.game_client = RemoteEnvAPIClient()
 
         # We use HighLow subspaces because they allow various ranges
         action_subspaces = [
@@ -34,8 +35,8 @@ class StarCraftEnv(gym.Env):
                                             shape=(starcraft_screen_height,
                                                    starcraft_screen_width))
 
-        body = self.game_client.create_env()  # Initializes a new episode on the server
-        self.id = body["id"]
+        body = self.api_client.create_env()  # Initializes a new episode on the server
+        self.id = body["env_id"]
         self._decode_and_cache_raw_observation(body["observation"])
 
     def _decode_and_cache_raw_observation(self, raw_observation):
@@ -56,14 +57,14 @@ class StarCraftEnv(gym.Env):
         return observation
 
     def _reset(self):
-        _, _, body = self.game_client.reset_env(self.id, {
+        _, _, body = self.api_client.reset_env(self.id, {
             "map": "StarCraftMining-v0",
         })
         observation = self._decode_and_cache_raw_observation(body["observation"])
         return observation
 
     def _step(self, action_payload):
-        body = self.game_client.step_env(self.id, action_payload)
+        body = self.api_client.step_env(self.id, action_payload)
         observation = self._decode_and_cache_raw_observation(body["observation"])
         return observation, body["reward"], body["done"], {}
 
@@ -87,4 +88,4 @@ class StarCraftEnv(gym.Env):
             self.viewer.imshow(self._get_rgb())
 
     def _close(self):
-        self.game_client.close_env(self.id)
+        self.api_client.close_env(self.id)
