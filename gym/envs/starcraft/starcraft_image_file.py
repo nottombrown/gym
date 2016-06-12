@@ -1,3 +1,4 @@
+from base64 import b64decode
 from io import BytesIO
 import numpy as np
 from PIL import Image, ImageFile, ImagePalette
@@ -86,6 +87,14 @@ class StarCraftImageFile(ImageFile.ImageFile):
             np_matrix: A 480 x 640 matrix of uint8s
         """
         return cls.from_screen_buffer(bytearray(list(np_matrix.flatten())))
+
+    @classmethod
+    def from_b64_screen_buffer(cls, b64_screen_buffer):
+        """
+        Args:
+            b64_screen_buffer: A base-64 encoding of a StarCraft screendump
+        """
+        return cls.from_screen_buffer(b64decode(b64_screen_buffer))
 
 
 # Register with ImageFile loaders

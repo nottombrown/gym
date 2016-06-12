@@ -5,9 +5,7 @@ from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile, \
     starcraft_screen_width
 from starcraft_api_client import StarCraftAPIClient
 import numpy as np
-# To play yourself, run:
-#
-# python examples/agents/mouse_keyboard_agent.py StarCraftBasic-v0
+
 
 class StarCraftBasicEnv(gym.Env):
     metadata = {
@@ -16,12 +14,9 @@ class StarCraftBasicEnv(gym.Env):
 
     def __init__(self):
         self.viewer = None
-        self._obs = None # Cache the last observation we've seen
+        self._cached_obs = None # Cache the last observation we've seen
 
         self.game_client = StarCraftAPIClient()
-        self.game_client.reset()  # Initializes a new episode on the server
-
-        self.action_space = spaces.Discrete(4)
 
         # We use HighLow subspaces because they allow various ranges
         action_subspaces = [
@@ -37,21 +32,41 @@ class StarCraftBasicEnv(gym.Env):
         self.observation_space = spaces.Box(low=0, high=255,
                                             shape=(starcraft_screen_height,
                                                    starcraft_screen_width))
-        self._reset()
+
+        body = self.game_client.create_env()  # Initializes a new episode on the server
+        self.id = body["id"]
+        self._decode_and_cache_raw_observation(body["observation"])
+
+    def _decode_and_cache_raw_observation(self, raw_observation):
+        """
+        Convert a raw observation into a numpy vector. We cache it to prevent having to do
+        additional requests to the API
+
+        Args:
+            raw_observation: A base-64 encoding of a StarCraft screendump
+
+        Returns:
+            A 480 x 640 matrix of uint8s representing a screen dump from a starcraft game
+        """
+        # Decode the screenbuffer into an observation
+        img = StarCraftImageFile.from_b64_screen_buffer(raw_observation)
+        observation = img.to_obs()
+        self._cached_obs = observation
 
     def _reset(self):
-        return self._step(0)[0]
+        _, _, body = self.game_client.reset_env(self.id, {
+            "map": "StarCraftMining-v0",
+        })
+        observation = self._decode_and_cache_raw_observation(body["observation"])
+        return observation
 
     def _step(self, action_payload):
-        screen_buffer_obs, reward, done, info = self.game_client.step(action_payload)
-
-        observation = StarCraftImageFile.from_screen_buffer(screen_buffer_obs).to_obs()
-        self._obs = observation
-
-        return observation, reward, done, info
+        body = self.game_client.step_env(self.id, action_payload)
+        observation = self._decode_and_cache_raw_observation(body["observation"])
+        return observation, body["reward"], body["done"], {}
 
     def _get_rgb(self):
-        img = StarCraftImageFile.from_np_array(self._obs)
+        img = StarCraftImageFile.from_np_array(self._cached_obs)
         return img.to_np_rgb()
 
     def _render(self, mode='human', close=False):

@@ -1,4 +1,3 @@
-import unittest
 from gym.envs.starcraft.starcraft_api_client import StarCraftAPIClient
 from gym.envs.starcraft.tests.helper import StarCraftAPITestCase, TestData
 
