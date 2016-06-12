@@ -50,17 +50,11 @@ class RemoteStarCraftGameClient(object):
 
     def _post(self, endpoint, headers, body):
         """
-        Parameters
-        ----------
-        endpoint
-        headers
-        body
+        Args:
+            (endpoint, headers, body)
 
-        Returns
-        -------
-        status
-        headers
-        body
+        Returns:
+            (status, headers, body)
         """
 
         # print("Sending command %s ..." % command)
