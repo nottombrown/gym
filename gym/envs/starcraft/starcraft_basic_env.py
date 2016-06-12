@@ -3,7 +3,7 @@ from gym import spaces
 from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile, \
     starcraft_screen_height, \
     starcraft_screen_width
-from remote_starcraft_game_client import RemoteStarCraftGameClient
+from starcraft_api_client import StarCraftAPIClient
 import numpy as np
 # To play yourself, run:
 #
@@ -18,7 +18,7 @@ class StarCraftBasicEnv(gym.Env):
         self.viewer = None
         self._obs = None # Cache the last observation we've seen
 
-        self.game_client = RemoteStarCraftGameClient()
+        self.game_client = StarCraftAPIClient()
         self.game_client.reset()  # Initializes a new episode on the server
 
         self.action_space = spaces.Discrete(4)

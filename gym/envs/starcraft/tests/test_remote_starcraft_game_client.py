@@ -1,12 +1,12 @@
 import unittest
-from gym.envs.starcraft.remote_starcraft_game_client import RemoteStarCraftGameClient
+from gym.envs.starcraft.starcraft_api_client import StarCraftAPIClient
 from gym.envs.starcraft.tests.helper import StarCraftAPITestCase, TestData
 
 
 class RemoteStarCraftGameClientTest(StarCraftAPITestCase):
 
     def setUp(self):
-        self.game_client = RemoteStarCraftGameClient()
+        self.game_client = StarCraftAPIClient()
 
     def test_create_env(self):
         self.game_client

@@ -19,7 +19,7 @@ class OutOfSyncAPIException(StarCraftClientException):
     pass
 
 
-class RemoteStarCraftGameClient(object):
+class StarCraftAPIClient(object):
     """
     Thin client around the StarCraftGameAPI
     """
