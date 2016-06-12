@@ -17,9 +17,10 @@ class NoAvailableWorkersException(StarCraftClientException):
 class OutOfSyncAPIException(StarCraftClientException):
     pass
 
+# TODO: Rename to RemoteEnvAPIClient
 
-class StarCraftAPIClient(object):
-    """
+class RemoteEnvAPIClient(object):
+    """fview
     Stateless client for the StarCraftAPI
     """
 

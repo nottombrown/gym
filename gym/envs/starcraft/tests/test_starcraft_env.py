@@ -1,10 +1,8 @@
-from gym.envs.StarCraftEnv import StarCraftEnv
-from gym.envs.starcraft.starcraft_api_client import StarCraftAPIClient
 from gym.envs.starcraft.starcraft_basic_env import StarCraftBasicEnv
-from gym.envs.starcraft.tests.helper import StarCraftAPITestCase, TestData
+from gym.envs.starcraft.tests.helper import RemoteEnvAPITestCase
 
 
-class StarCraftEnvTest(StarCraftAPITestCase):
+class StarCraftEnvTest(RemoteEnvAPITestCase):
     """
     We test the private methods of the Env to make sure that the correct arguments are sent
     to our mock API

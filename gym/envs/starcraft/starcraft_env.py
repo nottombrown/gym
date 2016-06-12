@@ -1,6 +1,7 @@
 import gym
 from gym import spaces
-from gym.envs.starcraft.starcraft_api_client import StarCraftAPIClient
+from gym.envs.starcraft.remote_env_api_client import RemoteEnvAPIClient
+
 from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile, \
     starcraft_screen_height, \
     starcraft_screen_width
@@ -16,7 +17,7 @@ class StarCraftEnv(gym.Env):
         self.viewer = None
         self._cached_obs = None # Cache the last observation we've seen
 
-        self.game_client = StarCraftAPIClient()
+        self.game_client = RemoteEnvAPIClient()
 
         # We use HighLow subspaces because they allow various ranges
         action_subspaces = [

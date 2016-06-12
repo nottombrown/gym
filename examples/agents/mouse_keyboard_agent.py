@@ -64,3 +64,5 @@ if __name__ == '__main__':
                 break
 
             time.sleep(1.0/30) # Render at 30 fps
+
+    # TODO: insure that the environment gets closed correctly

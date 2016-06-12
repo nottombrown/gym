@@ -7,11 +7,11 @@ from gym.envs.starcraft.tests.test_starcraft_image_file import StarCraftImageFil
 from gym.scoreboard.client.tests.helper import fake_id
 
 
-class StarCraftAPITestCase(unittest.TestCase):
+class RemoteEnvAPITestCase(unittest.TestCase):
     def setUp(self):
-        super(StarCraftAPITestCase, self).setUp()
+        super(RemoteEnvAPITestCase, self).setUp()
         self.api_client_patcher = mock.patch(
-            'gym.envs.starcraft.starcraft_api_client.StarCraftAPIClient')
+            'gym.envs.starcraft.remote_env_api_client.RemoteEnvAPIClient')
 
         api_client_class_mock = self.api_client_patcher.start()
         self.api_client_mock = api_client_class_mock.return_value
