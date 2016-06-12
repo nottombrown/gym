@@ -1,6 +1,7 @@
 import zmq
 import json
 
+
 class RemoteEnvAPIRequestor(object):
     """
     We emulate HTTP over zmq - Messages are sent as tuples of three strings.
