@@ -1,5 +1,5 @@
 import unittest
-from io import StringIO
+from io import BytesIO
 from numpy import testing as np_test
 import numpy as np
 from PIL import Image
@@ -15,7 +15,7 @@ class StarCraftImageFileTest(unittest.TestCase):
 
     def test_to_obs(self):
         obs = self.img.to_obs()
-        self.assertEqual(obs.shape, (480 * 640,))
+        self.assertEqual(obs.shape, (480, 640))
 
     def test_from_np_array(self):
         new_img = StarCraftImageFile.from_np_array(self.img.to_obs())
@@ -23,18 +23,21 @@ class StarCraftImageFileTest(unittest.TestCase):
         # Images are the same
         np_test.assert_equal(new_img.to_obs(), self.img.to_obs())
 
-        # Regression - Palettes are the same
+    def test_palette_serialization(self):
+        new_img = StarCraftImageFile.from_np_array(self.img.to_obs())
+
+        # Regression - Palettes are the same as a scif
         self.assertEqual(list(self.img.getpalette()), list(new_img.getpalette()))
 
         # Regression - Bytes are the same when written as a png
-        old_bytes = StringIO()
-        new_bytes = StringIO()
+        old_bytes = BytesIO()
+        new_bytes = BytesIO()
         self.img.save(old_bytes, format='png')
         new_img.save(new_bytes, format='png')
 
         self.assertEqual(list(old_bytes), list(new_bytes))
 
-        # Regression - Pixels and palettes are the same
+        # Regression - Pixels and palettes are the same as png
         old_image = Image.open(old_bytes)
         new_image = Image.open(new_bytes)
 
