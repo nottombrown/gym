@@ -24,7 +24,7 @@ class StarCraftImageFile(ImageFile.ImageFile):
         # Size in pixels (width, height)
         self.size = int(640), int(480)
         self.mode = "P"  # 8-bit palette-mapped image.
-        self.palette = self.global_palette
+        self.palette = self.global_palette.copy()
 
         header = self.fp.read(8)
         if header[:8] != _SCIF_HEADER:

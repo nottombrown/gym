@@ -10,8 +10,7 @@ from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile
 class StarCraftImageFileTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # cls.img = Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
-        cls.img = Image.open('starcraft_screenshot.scif')
+        cls.img = Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
         assert isinstance(cls.img, StarCraftImageFile)
 
     def test_to_obs(self):
@@ -24,6 +23,9 @@ class StarCraftImageFileTest(unittest.TestCase):
         # Images are the same
         np_test.assert_equal(new_img.to_obs(), self.img.to_obs())
 
+        # Regression - Palettes are the same
+        self.assertEqual(list(self.img.getpalette()), list(new_img.getpalette()))
+
         # Regression - Bytes are the same when written as a png
         old_bytes = StringIO()
         new_bytes = StringIO()
@@ -32,27 +34,21 @@ class StarCraftImageFileTest(unittest.TestCase):
 
         self.assertEqual(list(old_bytes), list(new_bytes))
 
-        # Regression - Pixels are the same
+        # Regression - Pixels and palettes are the same
         old_image = Image.open(old_bytes)
         new_image = Image.open(new_bytes)
 
         self.assertEqual(list(old_image.getdata()), list(new_image.getdata()))
+        self.assertEqual(list(old_image.getpalette()), list(new_image.getpalette()))
 
-        # Regression - Pixels are the same in RGB
 
-        # list(old_image.convert('RGB').getdata())
-        # list(new_image.convert('RGB').getdata())
+    def test_to_np_rgb(self):
+        np_rgb = self.img.to_np_rgb()
+        self.assertEqual(np_rgb.shape, (480, 640, 3))
 
-        np_test.assert_equal(np.array(old_image.convert('RGB').getdata()),
-                         np.array(new_image.convert('RGB').getdata()))
-
-    # def test_to_np_rgb(self):
-    #     np_rgb = self.img.to_np_rgb()
-    #     self.assertEqual(np_rgb.shape, (480, 640, 3))
-    #
-    #     # Test that pixels are correct
-    #     first_pixel = np.array([36, 40, 44], dtype=np.uint8)
-    #     np_test.assert_equal(np_rgb[0, 0, :], first_pixel)
+        # Test that pixels are correct
+        first_pixel = np.array([36, 40, 44], dtype=np.uint8)
+        np_test.assert_equal(np_rgb[0, 0, :], first_pixel)
     #
     # def test_to_np_rgb_after_vectorizing(self):
     #     # Regression test
