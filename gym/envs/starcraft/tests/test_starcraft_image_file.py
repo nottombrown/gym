@@ -1,6 +1,5 @@
 import unittest
-from StringIO import StringIO
-
+from io import StringIO
 from numpy import testing as np_test
 import numpy as np
 from PIL import Image
@@ -10,6 +9,7 @@ from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile
 class StarCraftImageFileTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # Read the test image into memory, we use it for the rest of the tests
         cls.img = Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
         assert isinstance(cls.img, StarCraftImageFile)
 
@@ -41,7 +41,6 @@ class StarCraftImageFileTest(unittest.TestCase):
         self.assertEqual(list(old_image.getdata()), list(new_image.getdata()))
         self.assertEqual(list(old_image.getpalette()), list(new_image.getpalette()))
 
-
     def test_to_np_rgb(self):
         np_rgb = self.img.to_np_rgb()
         self.assertEqual(np_rgb.shape, (480, 640, 3))
@@ -49,12 +48,12 @@ class StarCraftImageFileTest(unittest.TestCase):
         # Test that pixels are correct
         first_pixel = np.array([36, 40, 44], dtype=np.uint8)
         np_test.assert_equal(np_rgb[0, 0, :], first_pixel)
-    #
-    # def test_to_np_rgb_after_vectorizing(self):
-    #     # Regression test
-    #     new_img = StarCraftImageFile.from_np_array(self.img.to_obs())
-    #     np_rgb = new_img.to_np_rgb()
-    #
-    #     # Test that pixels stay the same after vectorizing
-    #     first_pixel = np.array([36, 40, 44], dtype=np.uint8)
-    #     np_test.assert_equal(np_rgb[0, 0, :], first_pixel)
+
+    def test_to_np_rgb_after_vectorizing(self):
+        # Regression test
+        new_img = StarCraftImageFile.from_np_array(self.img.to_obs())
+        np_rgb = new_img.to_np_rgb()
+
+        # Test that pixels stay the same after vectorizing
+        first_pixel = np.array([36, 40, 44], dtype=np.uint8)
+        np_test.assert_equal(np_rgb[0, 0, :], first_pixel)
