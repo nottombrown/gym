@@ -47,3 +47,35 @@ class TestData(object):
                 "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
             })
 
+    @classmethod
+    def step_env_response(cls):
+        return (
+            "200",
+            cls.headers(),
+            {
+                "env_id": fake_id("env"),
+                "done": False,
+                "task": "StarCraftMining-v0",
+                "reward": 0.52,
+                "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
+            })
+
+    @classmethod
+    def reset_env_response(cls):
+        return (
+            "200",
+            cls.headers(),
+            {
+                "env_id": fake_id("env"),
+                "task": "StarCraftMining-v0",
+                "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
+            })
+
+    @classmethod
+    def close_env_response(cls):
+        return (
+            "200",
+            cls.headers(),
+            {
+                "env_id": fake_id("env"),
+            })

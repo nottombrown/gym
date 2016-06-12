@@ -57,7 +57,7 @@ class StarCraftEnv(gym.Env):
         return observation
 
     def _reset(self):
-        _, _, body = self.api_client.reset_env(self.id, {
+        body = self.api_client.reset_env(self.id, {
             "map": "StarCraftMining-v0",
         })
         observation = self._decode_and_cache_raw_observation(body["observation"])
