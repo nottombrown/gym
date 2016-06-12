@@ -85,6 +85,7 @@ def _accept(prefix):
     return prefix[:8] == _SCIF_HEADER
 
 Image.register_open("SCIF", StarCraftImageFile, _accept)
+
 Image.register_extension("SCIF", ".scif")
 
 

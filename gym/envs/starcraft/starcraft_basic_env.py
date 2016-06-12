@@ -3,7 +3,7 @@ import gym
 from gym import spaces
 from StringIO import StringIO
 from PIL import Image
-from gym.envs.starcraft.starcraft_image_plugin import StarCraftImageFile, _SCIF_HEADER
+from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile, _SCIF_HEADER
 from PIL.PngImagePlugin import PngImageFile
 
 from remote_starcraft_game_client import RemoteStarCraftGameClient

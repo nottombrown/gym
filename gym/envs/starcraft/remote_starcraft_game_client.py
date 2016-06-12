@@ -3,7 +3,7 @@ import json
 from base64 import b64decode
 import numpy as np
 
-from gym.envs.starcraft.starcraft_image_plugin import StarCraftImageFile
+from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile
 
 
 class StarCraftClientException(Exception):
@@ -17,19 +17,6 @@ class NoAvailableWorkersException(StarCraftClientException):
 
 class OutOfSyncAPIException(StarCraftClientException):
     pass
-
-
-with open("/tmp/starcraft.scif.base64", 'r') as b64_scif:
-    scif_bytes = b64decode(b64_scif.read())
-    b64_scif.close()
-
-screen_buffer = scif_bytes
-img = StarCraftImageFile.from_screen_buffer(screen_buffer)
-img.to_np_rgb()
-img.to_np_rgb()
-
-
-obs = img.to_obs()
 
 
 class RemoteStarCraftGameClient(object):
@@ -50,6 +37,19 @@ class RemoteStarCraftGameClient(object):
 
         windows_server_2012_url = "tcp://0.tcp.ngrok.io:19085"
         self.socket.connect(windows_server_2012_url)
+
+        # TODO: Use actual file
+        with open("/tmp/starcraft_screenshot.scif", 'r') as b64_scif:
+            scif_bytes = b64decode(b64_scif.read())
+            b64_scif.close()
+
+        screen_buffer = scif_bytes
+        img = StarCraftImageFile.from_screen_buffer(screen_buffer)
+        img.to_np_rgb()
+        img.to_np_rgb()
+
+        self._fixed_obs = img.to_obs()
+
 
     def _post(self, endpoint, headers, body):
         """
@@ -85,7 +85,7 @@ class RemoteStarCraftGameClient(object):
 
         body = {
             "done": False,
-            "observation": obs,
+            "observation": self._fixed_obs,
             "reward": 1.0
         }
 
