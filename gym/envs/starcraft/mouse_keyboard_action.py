@@ -40,7 +40,7 @@ class MouseKeyboardAction(object):
         pass
 
     def to_np(self):
-        return np.array([0, 0, 0, 0])
+        return np.array([0, 0, 0, 0, 0])
 
     def to_json(self):
         """
