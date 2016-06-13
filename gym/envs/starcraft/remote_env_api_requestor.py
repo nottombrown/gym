@@ -55,9 +55,8 @@ class RemoteEnvAPIRequestor(object):
         Returns:
             (status, headers, body)
         """
-        # TODO: Find a place to handle errors
-        # TODO: Find a place to set headers
-        # TODO: How should we address security - certs etc.
+        # TODO: Add error handling here
+        # TODO: How should we address security - certs etc?
         socket = cls._open_zmq_socket()
 
         request = (

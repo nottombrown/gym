@@ -1,28 +1,19 @@
 from gym.envs.starcraft import remote_env_api_requestor
 
-class StarCraftClientException(Exception):
-    def __init__(self, msg, response):
-        super(Exception, msg)
-        self.response = response
-
-
-class NoAvailableWorkersException(StarCraftClientException):
-    pass
-
-
-class OutOfSyncAPIException(StarCraftClientException):
-    pass
-
 
 class RemoteEnvAPIClient(object):
     """
     Stateless client for the StarCraftAPI
     """
     def request(self, endpoint, headers, body):
-        # This is verbose, but it makes it easier to patch in RemoteEnvAPITestCase
-        return remote_env_api_requestor.RemoteEnvAPIRequestor.request(endpoint, headers, body)
 
-    # TODO: Validate params here
+        # This is verbose, but it makes it easier to patch in RemoteEnvAPITestCase
+        (status, headers, body) = remote_env_api_requestor.RemoteEnvAPIRequestor.request(endpoint, headers, body)
+
+        # TODO: Add error-handling and header-checking here
+        return status, headers, body
+
+    # TODO: Validate params in these API methods
     def create_env(self):
         _, _, body = self.request("POST v1/envs", {}, {})
         return body
@@ -39,3 +30,17 @@ class RemoteEnvAPIClient(object):
     def close_env(self, env_id):
         _, _, body = self.request("POST v1/envs/{0}/close".format(env_id), {}, {})
         return body
+
+
+class RemoteEnvAPIClientException(Exception):
+    def __init__(self, msg, response):
+        super(Exception, msg)
+        self.response = response
+
+
+class NoAvailableWorkersException(RemoteEnvAPIClientException):
+    pass
+
+
+class OutOfSyncAPIException(RemoteEnvAPIClientException):
+    pass
