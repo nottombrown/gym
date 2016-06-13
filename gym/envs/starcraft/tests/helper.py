@@ -71,6 +71,7 @@ class TestData(object):
                 "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
             })
 
+
     @classmethod
     def close_env_response(cls):
         return (
