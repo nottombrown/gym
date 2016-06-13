@@ -36,24 +36,19 @@ class MouseKeyboardAction(object):
         pass
 
     @classmethod
-    def from_np(cls, ):
-        pass
+    def from_np(cls, np_array):
+        return cls(*np_array.tolist())
 
     def to_np(self):
         return np.array([0, 0, 0, 0, 0])
 
-    def to_json(self):
-        """
-        Example JSON:
-
-        {
+    def to_dict(self):
+        return {
             "mouse": {
-                "x": 319,
-                "y": 211,
-                "button": 1
+                "x": self.x,
+                "y": self.y,
+                "button": self.button
             },
-            "key": 19
-            "modifiers": 2
+            "key": self.key,
+            "modifiers": self.modifiers
         }
-        """
-
