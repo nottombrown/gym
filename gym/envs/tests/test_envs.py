@@ -22,6 +22,11 @@ def should_skip_env_spec_for_tests(spec):
         logger.warn("Skipping tests for box2d env {}".format(spec._entry_point))
         return True
 
+    # TODO: Re-enable these tests when @tom figures out how to use RemoteEnvAPITestCase to mock out the API here
+    if spec._entry_point.startswith('gym.envs.starcraft:'):
+        logger.warn("Skipping tests for StarCraft env {}".format(spec._entry_point))
+        return True
+
     # Skip ConvergenceControl tests (the only env in parameter_tuning) according to pull #104
     if spec._entry_point.startswith('gym.envs.parameter_tuning:'):
         logger.warn("Skipping tests for parameter_tuning env {}".format(spec._entry_point))
@@ -37,11 +42,6 @@ specs = [spec for spec in envs.registry.all() if spec._entry_point is not None]
 @tools.params(*specs)
 def test_env(spec):
     if should_skip_env_spec_for_tests(spec):
-        return
-
-    # TODO: Re-enable these tests when @tom figures out how to use RemoteEnvAPITestCase to mock out the API here
-    if spec._entry_point.startswith('gym.envs.starcraft:'):
-        logger.warn("Skipping tests for StarCraft env {}".format(spec._entry_point))
         return
 
     env = spec.make()
