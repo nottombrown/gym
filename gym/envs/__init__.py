@@ -345,10 +345,7 @@ register(
 
 register(
     id='StarCraftBasic-v0',
-    entry_point='gym.envs.starcraft:StarCraftBasicEnv',
-    timestep_limit=1000,
-    reward_threshold=200,
-
+    entry_point='gym.envs.starcraft:StarCraftBasicEnv'
 )
 
 
