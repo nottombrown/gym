@@ -1,23 +1,26 @@
 import unittest
-from numpy import testing as np_test
+
 import numpy as np
 from PIL import Image
+from numpy import testing as np_test
 
 from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile
 
+
 class StarCraftImageFileTest(unittest.TestCase):
 
-    _test_image = None # Memoize the test_image
+    _test_image = None
 
     @classmethod
     def test_image(cls):
+        """ Memoized test Image loaded from a screenshot"""
         if not cls._test_image:
+            # TODO: Replace with a full image with the HUD
             cls._test_image = Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
         return cls._test_image
 
     @classmethod
     def setUpClass(cls):
-        # Read the test image into memory, we use it for the rest of the tests
         cls.img = cls.test_image()
         assert isinstance(cls.img, StarCraftImageFile)
 
