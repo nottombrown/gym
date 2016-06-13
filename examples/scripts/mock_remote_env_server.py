@@ -1,16 +1,19 @@
 import json
-import zmq
-from gym.envs.starcraft.tests.helper import TestData
 import logging
+
+import zmq
+
+from gym.envs.starcraft.tests.helper import TestData
+
 logger = logging.getLogger(__name__)
 
 
 def _bind_zmq_socket():
     context = zmq.Context()
     logger.info("Starting StarCraftLearningEnv API Server...")
-    zmq_socket = context.socket(zmq.REP)
-    zmq_socket.bind("tcp://*:3000")
-    return zmq_socket
+    socket = context.socket(zmq.REP)
+    socket.bind("tcp://*:3000")
+    return socket
 
 
 def _listen(socket):
