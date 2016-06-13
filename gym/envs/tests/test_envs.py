@@ -39,6 +39,11 @@ def test_env(spec):
     if should_skip_env_spec_for_tests(spec):
         return
 
+    # TODO: Re-enable these tests when @tom figures out how to use RemoteEnvAPITestCase to mock out the API here
+    if spec._entry_point.startswith('gym.envs.starcraft:'):
+        logger.warn("Skipping tests for StarCraft env {}".format(spec._entry_point))
+        return
+
     env = spec.make()
     ob_space = env.observation_space
     act_space = env.action_space
