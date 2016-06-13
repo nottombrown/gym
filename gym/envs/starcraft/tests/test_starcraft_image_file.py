@@ -6,14 +6,19 @@ from PIL import Image
 from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile
 
 class StarCraftImageFileTest(unittest.TestCase):
+
+    _test_image = None # Memoize the test_image
+
     @classmethod
-    def testImage(cls):
-        return Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
+    def test_image(cls):
+        if not cls._test_image:
+            cls._test_image = Image.open('gym/envs/starcraft/tests/starcraft_screenshot.scif')
+        return cls._test_image
 
     @classmethod
     def setUpClass(cls):
         # Read the test image into memory, we use it for the rest of the tests
-        cls.img = cls.testImage()
+        cls.img = cls.test_image()
         assert isinstance(cls.img, StarCraftImageFile)
 
     def test_to_obs(self):

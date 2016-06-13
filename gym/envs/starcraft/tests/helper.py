@@ -44,7 +44,7 @@ class TestData(object):
             {
                 "env_id": fake_id("env"),
                 "task": "StarCraftMining-v0",
-                "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
+                "observation": StarCraftImageFileTest.test_image().to_b64_screen_buffer()
             })
 
     @classmethod
@@ -57,7 +57,7 @@ class TestData(object):
                 "done": False,
                 "task": "StarCraftMining-v0",
                 "reward": 0.52,
-                "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
+                "observation": StarCraftImageFileTest.test_image().to_b64_screen_buffer()
             })
 
     @classmethod
@@ -68,7 +68,7 @@ class TestData(object):
             {
                 "env_id": fake_id("env"),
                 "task": "StarCraftMining-v0",
-                "observation": StarCraftImageFileTest.testImage().to_b64_screen_buffer()
+                "observation": StarCraftImageFileTest.test_image().to_b64_screen_buffer()
             })
 
 
