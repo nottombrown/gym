@@ -41,8 +41,8 @@ class RemoteEnvAPIRequestor(object):
         print("Connecting to StarCraftServer...")
         socket = context.socket(zmq.REQ)
 
-        windows_server_2012_url = "tcp://0.tcp.ngrok.io:19085"
-        socket.connect(windows_server_2012_url)
+        url = "tcp://localhost:3000"
+        socket.connect(url)
         return socket
 
     @classmethod
@@ -63,18 +63,22 @@ class RemoteEnvAPIRequestor(object):
             json.dumps(headers),
             json.dumps(body),
         )
+        print("Sending request: ", request)
 
         socket = cls._open_zmq_socket()
         socket.send_multipart(request)
-        status, response_headers, response_body = socket.recv_multipart(request)
+        status, response_headers_json, response_body_json = socket.recv_multipart()
 
         # Socket is closed automatically during GC, but we do it anyway to be safe
         socket.close()
 
-        print("Response %s" % status)
+        response_headers = json.loads(response_headers_json)
+        response_body = json.loads(response_body_json)
+
+        print("Received response", status, response_headers, response_body_json[:200])
 
         return (
             status,
-            json.loads(response_headers),
-            json.loads(body)
+            response_headers,
+            response_body
         )

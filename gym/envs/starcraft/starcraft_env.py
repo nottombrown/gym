@@ -1,5 +1,6 @@
 import gym
 from gym import spaces
+from gym.envs.starcraft.mouse_keyboard_action import MouseKeyboardAction
 from gym.envs.starcraft.remote_env_api_client import RemoteEnvAPIClient
 
 from gym.envs.starcraft.starcraft_image_file import StarCraftImageFile, \
@@ -63,8 +64,9 @@ class StarCraftEnv(gym.Env):
         observation = self._decode_and_cache_raw_observation(body["observation"])
         return observation
 
-    def _step(self, action_payload):
-        body = self.api_client.step_env(self.id, action_payload)
+    def _step(self, action):
+        mouse_keyboard_action = MouseKeyboardAction.from_np(action)
+        body = self.api_client.step_env(self.id, mouse_keyboard_action.to_dict())
         observation = self._decode_and_cache_raw_observation(body["observation"])
         return observation, body["reward"], body["done"], {}
 

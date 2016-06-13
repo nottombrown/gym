@@ -22,6 +22,7 @@ class RemoteEnvAPIClient(object):
         # This is verbose, but it makes it easier to patch in RemoteEnvAPITestCase
         return remote_env_api_requestor.RemoteEnvAPIRequestor.request(endpoint, headers, body)
 
+    # TODO: Validate params here
     def create_env(self):
         _, _, body = self.request("POST v1/envs", {}, {})
         return body
