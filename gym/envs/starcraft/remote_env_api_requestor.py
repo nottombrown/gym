@@ -3,6 +3,7 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
+
 class RemoteEnvAPIRequestor(object):
     """
     We emulate HTTP over zmq - Messages are sent as tuples of three strings.
@@ -55,9 +56,8 @@ class RemoteEnvAPIRequestor(object):
         Returns:
             (status, headers, body)
         """
-        # TODO: Add error handling here
         # TODO: How should we address security - certs etc?
-        socket = cls._open_zmq_socket()
+        socket = cls._open_zmq_socket()  # TODO: Is it bad to open and close a zmq socket on each request?
 
         request = (
             endpoint,
@@ -67,6 +67,7 @@ class RemoteEnvAPIRequestor(object):
         logger.info("Sending request:\n    {}\n    {}\n    {}".
                     format(*request))
 
+        # TODO: Add error handling here
         socket.send_multipart(request)
         status, response_headers_json, response_body_json = socket.recv_multipart()
 
