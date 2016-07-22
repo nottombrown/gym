@@ -1,10 +1,19 @@
+import argparse
 import logging
 import os, sys
 
 import gym
 
-# The world's simplest agent!
 class RandomAgent(object):
+    """
+    The world's simplest agent!
+
+    Example usage
+
+        python examples/agents/random_agent.py -e CartPole-v0
+        python examples/agents/random_agent.py -e SpaceInvaders-v0 -b bmrun_XhApLPUiSoyj2TpGpotuSQ
+
+    """
     def __init__(self, action_space):
         self.action_space = action_space
 
@@ -18,7 +27,12 @@ if __name__ == '__main__':
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
-    env = gym.make('CartPole-v0' if len(sys.argv)<2 else sys.argv[1])
+    parser = argparse.ArgumentParser(description=None)
+    parser.add_argument('-e', '--environment', default='CartPole-v0', help='Which environment to run on.')
+    parser.add_argument('-b', '--benchmark_run_id', default=None, help='Which benchmark run this is associated with.')
+    args = parser.parse_args()
+
+    env = gym.make(args.environment)
 
     # You provide the directory to write to (can be an existing
     # directory, including one with existing data -- all monitor files
@@ -55,4 +69,4 @@ if __name__ == '__main__':
     # Upload to the scoreboard. We could also do this from another
     # process if we wanted.
     logger.info("Successfully ran RandomAgent. Now trying to upload results to the scoreboard. If it breaks, you can always just try re-uploading the same results.")
-    gym.upload(outdir)
+    gym.upload(outdir, benchmark_run_id=args.benchmark_run_id)
