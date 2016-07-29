@@ -51,7 +51,12 @@ def rollout(env):
             skip -= 1
 
         obser, r, done, info = env.step(a)
+
         env.render()
+
+        # Slow down the game to make it easier to play
+        time.sleep(0.1)
+
         if done: break
         if human_wants_restart: break
         while human_sets_pause:
