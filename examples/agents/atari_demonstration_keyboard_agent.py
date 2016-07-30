@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import gym
 import sys
 import time
 
+import gym
+
 #
-# Test yourself as a learning agent! Pass environment name as a command-line argument.
+# Demonstration capture for Atari games
 #
+from gym.monitoring import demonstrations
+from gym.monitoring.demonstrations import DemonstrationRecorder
 
 env = gym.make('Pong-v0' if len(sys.argv)<2 else sys.argv[1])
 
 ACTIONS = env.action_space.n
-ROLLOUT_TIME = 1000
-SKIP_CONTROL = 0    # Use previous control decision SKIP_CONTROL times, that's how you
-                    # can test what skip is still usable.
-
+ROLLOUT_TIME = 10*60*30 # 10 minutes at 30 fps
 human_agent_action = 0
 human_wants_restart = False
 human_sets_pause = False
@@ -49,14 +49,18 @@ def rollout(env):
     global human_agent_action, human_wants_restart, human_sets_pause
     human_wants_restart = False
     obser = env.reset()
+
+    recorder = DemonstrationRecorder('/tmp/atari.demo')
+
     for t in range(ROLLOUT_TIME):
 
         a = human_agent_action
         print("Action: {}".format(a))
 
         obser, r, done, info = env.step(a)
-
+        recorder.record_step(a, obser)
         env.render()
+
 
         # Slow down the game to make it easier for me to play
         time.sleep(0.08)
@@ -66,6 +70,8 @@ def rollout(env):
         while human_sets_pause:
             env.render()
             time.sleep(0.1)
+
+    recorder.close()
 
 print("ACTIONS={}".format(ACTIONS))
 print("Press keys 1 2 3 ... to take actions 1 2 3 ...")
