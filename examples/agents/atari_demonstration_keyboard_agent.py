@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import sys, gym
+import gym
+import sys
+import time
 
 #
 # Test yourself as a learning agent! Pass environment name as a command-line argument.
@@ -20,18 +22,24 @@ human_sets_pause = False
 
 def key_press(key, mod):
     global human_agent_action, human_wants_restart, human_sets_pause
+    print("Pressed: {}".format(key))
+
     if key==0xff0d: human_wants_restart = True
     if key==32: human_sets_pause = not human_sets_pause
+
+    if key == 65362: # up arrow
+        key = 50
+    if key == 65364: # down arrow
+        key = 51
+
     a = key - ord('0')
     if a <= 0 or a >= ACTIONS: return
     human_agent_action = a
 
 def key_release(key, mod):
+    print("Released: {}".format(key))
     global human_agent_action
-    a = key - ord('0')
-    if a <= 0 or a >= ACTIONS: return
-    if human_agent_action == a:
-        human_agent_action = 0
+    human_agent_action = 0
 
 env.render()
 env.viewer.window.on_key_press = key_press
@@ -41,27 +49,22 @@ def rollout(env):
     global human_agent_action, human_wants_restart, human_sets_pause
     human_wants_restart = False
     obser = env.reset()
-    skip = 0
     for t in range(ROLLOUT_TIME):
-        if not skip:
-            #print("taking action {}".format(human_agent_action))
-            a = human_agent_action
-            skip = SKIP_CONTROL
-        else:
-            skip -= 1
+
+        a = human_agent_action
+        print("Action: {}".format(a))
 
         obser, r, done, info = env.step(a)
 
         env.render()
 
-        # Slow down the game to make it easier to play
-        time.sleep(0.1)
+        # Slow down the game to make it easier for me to play
+        time.sleep(0.08)
 
         if done: break
         if human_wants_restart: break
         while human_sets_pause:
             env.render()
-            import time
             time.sleep(0.1)
 
 print("ACTIONS={}".format(ACTIONS))
