@@ -59,11 +59,12 @@ def rollout(env):
 
         obser, r, done, info = env.step(a)
         recorder.record_step(a, obser)
+
         env.render()
 
 
         # Slow down the game to make it easier for me to play
-        time.sleep(0.08)
+        time.sleep(0.16)
 
         if done: break
         if human_wants_restart: break
