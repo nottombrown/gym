@@ -17,7 +17,6 @@ class DemonstrationRecorder(object):
 
         # Write Observation (1 line)
         obs_string = base64.b64encode(observation.tostring())
-        print(obs_string)
         self.file.write(obs_string)
         self.file.write("\n")
 
@@ -51,7 +50,6 @@ class DemonstrationReader(object):
 
 
 if __name__ == '__main__':
-
     import gym
     from gym.monitoring.demonstrations import DemonstrationReader
 
