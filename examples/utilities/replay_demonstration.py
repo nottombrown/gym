@@ -8,6 +8,9 @@ if __name__ == '__main__':
     reader = DemonstrationReader('/tmp/atari.demo')
 
     for action, observation in reader:
+        print(action)
+
+        # Render observation
         viewer = rendering.SimpleImageViewer()
         viewer.imshow(observation)
         sleep(0.01)

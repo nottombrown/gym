@@ -15,9 +15,6 @@ class DemonstrationRecorder(object):
         self.file.write(str(action))
         self.file.write("\n")
 
-        print(observation.shape)
-        print(observation.dtype)
-
         # Write Observation (1 line)
         obs_string = base64.b64encode(observation.tostring())
         print(obs_string)
